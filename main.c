@@ -109,15 +109,36 @@ int main() {
 	timeout(MOVEMENT_SLEEP);
 	curs_set(0);
 
+	// NOTE: Resizing the window while playing will break the game
 	int width, height;
 	getmaxyx(stdscr, height, width);
 
 	Snake player = snake_new(point_new(width/2, height/2), SNAKE_HEAD, SNAKE_BODY);
+	Point direction = point_new(-1, 0);
+
 	while (true) {
 		erase();
 		box(stdscr, 0, 0);
 		snake_draw(player);
 		refresh();
+
+		int input = getch();
+		switch (input) {
+			case KEY_UP:
+				point_set(&direction, 0, -1);
+				break;
+			case KEY_DOWN:
+				point_set(&direction, 0, 1);
+				break;
+			case KEY_RIGHT:
+				point_set(&direction, 1, 0);
+				break;
+			case KEY_LEFT:
+				point_set(&direction, -1, 0);
+				break;
+		}
+
+		snake_move_relative(player, direction);
 	}
 
 	snake_destroy(player);
