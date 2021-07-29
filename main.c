@@ -5,7 +5,6 @@
 
 #define SNAKE_HEAD '@'
 #define SNAKE_BODY '#'
-#define BACKGROUND ' '
 
 #define MOVEMENT_SLEEP 500
 
@@ -67,17 +66,39 @@ void snake_move(Snake snake, Point new_position) {
 	}
 }
 
+void snake_draw(Snake snake) {
+	struct Body *body = snake.head;
+	while (body->next != NULL) {
+		if (body->hidden) {
+			continue;
+		}
+
+		Point position = body->position;
+		move(position.y, position.x);
+		addch(body->symbol);
+
+		body = body->next;
+	}
+}
+
 int main() {
 	initscr();
 	cbreak();
 	noecho();
 	keypad(stdscr, TRUE);
 	timeout(MOVEMENT_SLEEP);
+	curs_set(0);
 
 	int width, height;
-	box(stdscr, 0, 0);
-	refresh();
 	getmaxyx(stdscr, height, width);
+
+	Snake player = snake_new(point_new(width/2, height/2), SNAKE_HEAD, SNAKE_BODY);
+	while (true) {
+		erase();
+		box(stdscr, 0, 0);
+		snake_draw(player);
+		refresh();
+	}
 
 	endwin();
 }
