@@ -39,12 +39,13 @@ struct Body *body_new(char symbol, Point position, bool hidden) {
 	body->hidden = hidden;
 }
 
-void body_add_tail(struct Body *body, char symbol) {
+void body_tail_show(struct Body *body, char symbol) {
 	while (body->next != NULL) {
 		body = body->next;
 	}
+	body->symbol = symbol;		// Ensure symbol is the one requested
 	body->hidden = false;
-	body->next = body_new(symbol, point_new(0, 0), true);		// Make new tail placeholder
+	body->next = body_new(0, point_new(0, 0), true);		// Make new tail placeholder
 }
 
 typedef struct {
@@ -53,7 +54,7 @@ typedef struct {
 
 Snake snake_new(Point position, char head_symbol, char body_symbol) {
 	struct Body *head = body_new(head_symbol, position, false);
-	body_add_tail(head, body_symbol);
+	body_tail_show(head, head_symbol);
 	return (Snake) {head};
 }
 
