@@ -75,9 +75,9 @@ int main() {
 	timeout(MOVEMENT_SLEEP);
 
 	int width, height;
-	getmaxyx(stdscr, width, height);
 	box(stdscr, 0, 0);
 	refresh();
+	getmaxyx(stdscr, height, width);
 
 	endwin();
 }
