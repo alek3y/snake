@@ -81,6 +81,16 @@ void snake_draw(Snake snake) {
 	}
 }
 
+void snake_destroy(Snake snake) {
+	struct Body *previous_body = snake.head, *body = previous_body->next;
+	while (body != NULL) {
+		free(previous_body);
+		previous_body = body;
+		body = body->next;
+	}
+	free(previous_body);
+}
+
 int main() {
 	initscr();
 	cbreak();
@@ -100,5 +110,7 @@ int main() {
 		refresh();
 	}
 
+	snake_destroy(player);
 	endwin();
+	exit_curses(0);
 }
