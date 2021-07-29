@@ -25,21 +25,33 @@ void point_set(Point *point, int x, int y) {
 struct Body {
 	Point position;
 	char symbol;
+	bool hidden;
 	struct Body *next;
 };
 
-struct Body *body_new(char symbol, Point position) {
+struct Body *body_new(char symbol, Point position, bool hidden) {
 	struct Body *body = calloc(1, sizeof(*body));
 	body->position = position;
 	body->symbol = symbol;
+	body->hidden = hidden;
+}
+
+void body_add_tail(struct Body *body, char symbol) {
+	while (body->next != NULL) {
+		body = body->next;
+	}
+	body->hidden = false;
+	body->next = body_new(symbol, point_new(0, 0), true);		// Make new tail placeholder
 }
 
 typedef struct {
 	struct Body *head;
 } Snake;
 
-Snake snake_new(Point position) {
-	return (Snake) {body_new(SNAKE_HEAD, position)};
+Snake snake_new(Point position, char head_symbol, char body_symbol) {
+	struct Body *head = body_new(head_symbol, position, false);
+	body_add_tail(head, body_symbol);
+	return (Snake) {head};
 }
 
 void snake_move(Snake snake, Point new_position) {
