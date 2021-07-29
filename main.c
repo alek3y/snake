@@ -6,7 +6,7 @@
 #define SNAKE_HEAD '@'
 #define SNAKE_BODY '#'
 
-#define MOVEMENT_SLEEP 500
+#define MOVEMENT_SLEEP 160
 
 typedef struct {
 	int x, y;
