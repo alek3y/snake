@@ -21,6 +21,10 @@ void point_set(Point *point, int x, int y) {
 	point->y = y;
 }
 
+Point point_sum(Point left, Point right) {
+	return (Point) {left.x + right.x, left.y + right.y};
+}
+
 struct Body {
 	Point position;
 	char symbol;
@@ -64,6 +68,11 @@ void snake_move(Snake snake, Point new_position) {
 		previous_body_position = body->position;
 		body->position = current_new_position;
 	}
+}
+
+// NOTE: Top-left is (0, 0)
+void snake_move_relative(Snake snake, Point direction) {
+	snake_move(snake, point_sum(snake.head->position, direction));
 }
 
 void snake_draw(Snake snake) {
