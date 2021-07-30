@@ -1,12 +1,20 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include <curses.h>
 #include <stdbool.h>
 
 #define SNAKE_HEAD '@'
 #define SNAKE_BODY '#'
+#define APPLE '*'
+#define APPLE_VALUE 1
 
 #define MOVEMENT_SLEEP 160
+
+// NOTE: Boundaries are inclusive
+long random_range(long min, long max) {
+	return random() % (max - min + 1) + min;
+}
 
 typedef struct {
 	int x, y;
@@ -23,6 +31,17 @@ void point_set(Point *point, int x, int y) {
 
 Point point_sum(Point left, Point right) {
 	return (Point) {left.x + right.x, left.y + right.y};
+}
+
+Point point_random(Point top_left, Point bottom_right) {
+	return point_new(
+		random_range(top_left.x, bottom_right.x),
+		random_range(top_left.y, bottom_right.y)
+	);
+}
+
+bool point_equals(Point from, Point to) {
+	return from.x == to.x && from.y == to.y;
 }
 
 struct Body {
@@ -99,7 +118,44 @@ void snake_destroy(Snake snake) {
 	free(previous_body);
 }
 
+bool snake_is(Snake snake, Point position) {
+	struct Body *body = snake.head;
+	while (body != NULL) {
+		if (point_equals(position, body->position)) {
+			return true;
+		}
+
+		body = body->next;
+	}
+	return false;
+}
+
+typedef struct {
+	Point position;
+	char symbol;
+	int value;
+} Apple;
+
+Apple apple_new(char symbol, int value) {
+	return (Apple) {point_new(0, 0), symbol, value};
+}
+
+void apple_place(Apple *apple, Snake snake, Point top_left, Point bottom_right) {
+	Point found = point_new(0, 0);
+	do {
+		found = point_random(top_left, bottom_right);
+	} while (snake_is(snake, found));
+	apple->position = found;
+}
+
+void apple_draw(Apple apple) {
+	move(apple.position.y, apple.position.x);
+	addch(apple.symbol);
+}
+
 int main() {
+	srand(time(NULL));
+
 	initscr();
 	cbreak();
 	noecho();
@@ -113,10 +169,13 @@ int main() {
 
 	Snake player = snake_new(point_new(width/2, height/2), SNAKE_HEAD, SNAKE_BODY);
 	Point direction = point_new(-1, 0);
+	Apple apple = apple_new(APPLE, APPLE_VALUE);
+	apple_place(&apple, player, point_new(1, 1), point_new(width-2, height-2));
 
 	while (true) {
 		erase();
 		box(stdscr, 0, 0);
+		apple_draw(apple);
 		snake_draw(player);
 		refresh();
 
