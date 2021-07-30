@@ -8,9 +8,9 @@
 #include "apple.h"
 #include "board.h"
 
-#define SNAKE_HEAD '@'
-#define SNAKE_BODY '#'
-#define APPLE '*'
+#define SNAKE_HEAD '0'
+#define SNAKE_BODY 'o'
+#define APPLE '+'
 #define APPLE_VALUE 1
 
 #define MOVEMENT_SLEEP 160
