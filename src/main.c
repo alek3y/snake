@@ -84,7 +84,9 @@ int main() {
 
 		snake_move_relative(player, board, direction);
 
-		if (point_equals(player.head->position, apple.position)) {
+		if (snake_is_dead(player)) {
+			break;
+		} else if (point_equals(player.head->position, apple.position)) {
 			apple_eaten++;		// Start animation
 		}
 

@@ -114,3 +114,16 @@ bool snake_is(Snake snake, Point position) {
 	}
 	return false;
 }
+
+bool snake_is_dead(Snake snake) {
+	Point head = snake.head->position;
+	struct Body *body = snake.head->next;
+	while (body != NULL) {
+		if (!body->hidden && point_equals(body->position, head)) {
+			return true;
+		}
+
+		body = body->next;
+	}
+	return false;
+}
