@@ -39,8 +39,8 @@ int main() {
 	apple_place(&apple, board, player);
 	size_t apple_eaten = 0;
 
-	bool run = true;
-	while (run) {
+	bool game_quit = false;
+	while (!game_quit) {
 		erase();
 		box(stdscr, 0, 0);
 		apple_draw(apple);
@@ -86,7 +86,7 @@ int main() {
 				break;
 
 			case 'q':
-				run = false;
+				game_quit = true;
 				break;
 		}
 
