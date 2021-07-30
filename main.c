@@ -78,14 +78,12 @@ void snake_move_relative(Snake snake, Point direction) {
 
 void snake_draw(Snake snake) {
 	struct Body *body = snake.head;
-	while (body->next != NULL) {
-		if (body->hidden) {
-			continue;
+	while (body != NULL) {
+		if (!body->hidden) {
+			Point position = body->position;
+			move(position.y, position.x);
+			addch(body->symbol);
 		}
-
-		Point position = body->position;
-		move(position.y, position.x);
-		addch(body->symbol);
 
 		body = body->next;
 	}
