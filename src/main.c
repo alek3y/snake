@@ -52,25 +52,33 @@ int main() {
 			case 'w':
 			case 'i':
 			case KEY_UP:
-				point_set(&direction, 0, -1);
+				if (direction.y != 1) {
+					point_set(&direction, 0, -1);
+				}
 				break;
 
 			case 's':
 			case 'k':
 			case KEY_DOWN:
-				point_set(&direction, 0, 1);
+				if (direction.y != -1) {
+					point_set(&direction, 0, 1);
+				}
 				break;
 
 			case 'd':
 			case 'l':
 			case KEY_RIGHT:
-				point_set(&direction, 1, 0);
+				if (direction.x != -1) {
+					point_set(&direction, 1, 0);
+				}
 				break;
 
 			case 'a':
 			case 'j':
 			case KEY_LEFT:
-				point_set(&direction, -1, 0);
+				if (direction.x != 1) {
+					point_set(&direction, -1, 0);
+				}
 				break;
 
 			case 'p':
