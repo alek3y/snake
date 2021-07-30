@@ -78,7 +78,7 @@ int main() {
 				break;
 		}
 
-		snake_move_relative(player, direction);
+		snake_move_relative(player, board, direction);
 	}
 
 	snake_destroy(player);

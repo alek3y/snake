@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include "point.h"
+#include "board.h"
 
 #pragma once
 
@@ -51,8 +52,32 @@ void snake_move(Snake snake, Point new_position) {
 }
 
 // NOTE: Top-left is (0, 0)
-void snake_move_relative(Snake snake, Point direction) {
-	snake_move(snake, point_sum(snake.head->position, direction));
+void snake_move_relative(Snake snake, Board board, Point direction) {
+	Point target = point_sum(snake.head->position, direction);
+
+	// Teleport when going out the frame
+	if (!board_is_inside(board, target)) {
+		switch (direction.x) {
+			case 1:
+				target.x = board.top_left.x;
+				break;
+			case -1:
+				target.x = board.bottom_right.x;
+				break;
+			default:
+				switch (direction.y) {
+					case 1:
+						target.y = board.top_left.y;
+						break;
+					case -1:
+						target.y = board.bottom_right.y;
+						break;
+				}
+				break;
+		}
+	}
+
+	snake_move(snake, target);
 }
 
 void snake_draw(Snake snake) {
