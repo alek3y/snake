@@ -6,6 +6,7 @@
 #include "point.h"
 #include "snake.h"
 #include "apple.h"
+#include "board.h"
 
 #define SNAKE_HEAD '@'
 #define SNAKE_BODY '#'
@@ -28,10 +29,11 @@ int main() {
 	int width, height;
 	getmaxyx(stdscr, height, width);
 
+	Board board = board_new(point_new(1, 1), point_new(width-2, height-2));
 	Snake player = snake_new(point_new(width/2, height/2), SNAKE_HEAD, SNAKE_BODY);
 	Point direction = point_new(-1, 0);
 	Apple apple = apple_new(APPLE, APPLE_VALUE);
-	apple_place(&apple, player, point_new(1, 1), point_new(width-2, height-2));
+	apple_place(&apple, board, player);
 
 	bool run = true;
 	while (run) {

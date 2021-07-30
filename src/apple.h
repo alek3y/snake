@@ -1,5 +1,6 @@
 #include "point.h"
 #include "snake.h"
+#include "board.h"
 
 #pragma once
 
@@ -13,10 +14,10 @@ Apple apple_new(char symbol, int value) {
 	return (Apple) {point_new(0, 0), symbol, value};
 }
 
-void apple_place(Apple *apple, Snake snake, Point top_left, Point bottom_right) {
+void apple_place(Apple *apple, Board board, Snake snake) {
 	Point found = point_new(0, 0);
 	do {
-		found = point_random(top_left, bottom_right);
+		found = board_random_position(board);
 	} while (snake_is(snake, found));
 	apple->position = found;
 }
