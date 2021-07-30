@@ -56,6 +56,7 @@ struct Body *body_new(char symbol, Point position, bool hidden) {
 	body->position = position;
 	body->symbol = symbol;
 	body->hidden = hidden;
+	return body;
 }
 
 void body_tail_show(struct Body *body, char symbol) {
