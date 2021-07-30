@@ -1,7 +1,9 @@
 CC := gcc
+OUTDIR := target
 
 all:
-	$(CC) main.c -lncurses -o main
+	mkdir -p $(OUTDIR)
+	$(CC) src/main.c -lncurses -o $(OUTDIR)/main
 
 run: all
-	./main
+	./$(OUTDIR)/main
