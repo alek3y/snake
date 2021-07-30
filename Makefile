@@ -7,3 +7,6 @@ all:
 
 run: all
 	./$(OUTDIR)/main
+
+clean:
+	rm -r $(OUTDIR)
