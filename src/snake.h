@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include "point.h"
+#include "list.h"
 #include "board.h"
 
 #pragma once
@@ -8,7 +9,6 @@ struct Body {
 	Point position;
 	char symbol;
 	bool hidden;
-	struct Body *next;
 };
 
 struct Body *body_new(char symbol, Point position, bool hidden) {
@@ -19,41 +19,47 @@ struct Body *body_new(char symbol, Point position, bool hidden) {
 	return body;
 }
 
-void body_tail_show(struct Body *body, char symbol) {
-	while (body->next != NULL) {
-		body = body->next;
-	}
-	body->symbol = symbol;		// Ensure symbol is the one requested
-	body->hidden = false;
-	body->next = body_new(0, point_new(0, 0), true);		// Make new tail placeholder
-}
-
 typedef struct {
-	struct Body *head;
+	List body;
 } Snake;
 
+void snake_tail_show(Snake *snake, char symbol) {
+	struct Body *last = list_get(snake->body, snake->body.size-1);
+	last->symbol = symbol;
+	last->hidden = false;
+	list_push(&snake->body, body_new(0, point_new(0, 0), true));		// Make new tail placeholder
+}
+
 Snake snake_new(Point position, char head_symbol, char body_symbol) {
-	struct Body *head = body_new(head_symbol, position, false);
-	body_tail_show(head, head_symbol);
-	return (Snake) {head};
+	Snake snake = {list_new()};
+	list_push(&snake.body, body_new(head_symbol, position, false));
+	snake_tail_show(&snake, head_symbol);
+	return snake;
+}
+
+Point snake_position(Snake snake) {
+	return ((struct Body *) list_get(snake.body, 0))->position;
 }
 
 void snake_move(Snake snake, Point new_position) {
-	struct Body *body = snake.head;
-	Point previous_body_position = body->position;
+	struct Node *node = list_get_node(snake.body, 0);
+
+	struct Body *body = node->content;
+	Point previous_position = body->position;
 	body->position = new_position;
 
-	while (body->next != NULL) {
-		body = body->next;
-		Point current_new_position = previous_body_position;
-		previous_body_position = body->position;
+	while (node->next != NULL) {
+		node = node->next;
+		body = node->content;
+		Point current_new_position = previous_position;
+		previous_position = body->position;
 		body->position = current_new_position;
 	}
 }
 
 // NOTE: Top-left is (0, 0)
 void snake_move_relative(Snake snake, Board board, Point direction) {
-	Point target = point_sum(snake.head->position, direction);
+	Point target = point_sum(snake_position(snake), direction);
 
 	// Teleport when going out the frame
 	if (!board_is_inside(board, target)) {
@@ -81,49 +87,47 @@ void snake_move_relative(Snake snake, Board board, Point direction) {
 }
 
 void snake_draw(Snake snake) {
-	struct Body *body = snake.head;
-	while (body != NULL) {
+	struct Node *node = list_get_node(snake.body, 0);
+	while (node != NULL) {
+		struct Body *body = node->content;
 		if (!body->hidden) {
 			Point position = body->position;
 			move(position.y, position.x);
 			addch(body->symbol);
 		}
 
-		body = body->next;
+		node = node->next;
 	}
 }
 
-void snake_destroy(Snake snake) {
-	struct Body *previous_body = snake.head, *body = previous_body->next;
-	while (body != NULL) {
-		free(previous_body);
-		previous_body = body;
-		body = body->next;
-	}
-	free(previous_body);
+void snake_destroy(Snake *snake) {
+	list_free_contents(snake->body);
+	list_destroy(&snake->body);
 }
 
 bool snake_is(Snake snake, Point position) {
-	struct Body *body = snake.head;
-	while (body != NULL) {
+	struct Node *node = list_get_node(snake.body, 0);
+	while (node != NULL) {
+		struct Body *body = node->content;
 		if (point_equals(position, body->position)) {
 			return true;
 		}
 
-		body = body->next;
+		node = node->next;
 	}
 	return false;
 }
 
 bool snake_is_dead(Snake snake) {
-	Point head = snake.head->position;
-	struct Body *body = snake.head->next;
-	while (body != NULL) {
+	Point head = snake_position(snake);
+	struct Node *node = list_get_node(snake.body, 1);
+	while (node != NULL) {
+		struct Body *body = node->content;
 		if (!body->hidden && point_equals(body->position, head)) {
 			return true;
 		}
 
-		body = body->next;
+		node = node->next;
 	}
 	return false;
 }

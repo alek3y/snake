@@ -4,6 +4,7 @@
 #include <curses.h>
 #include <stdbool.h>
 #include "point.h"
+#include "list.h"
 #include "snake.h"
 #include "apple.h"
 #include "board.h"
@@ -82,7 +83,7 @@ int main() {
 				break;
 
 			case 'p':
-				body_tail_show(player.head, SNAKE_BODY);
+				snake_tail_show(&player, SNAKE_BODY);
 				break;
 
 			case 'q':
@@ -94,14 +95,16 @@ int main() {
 
 		if (snake_is_dead(player)) {
 			break;
-		} else if (point_equals(player.head->position, apple.position)) {
+		} else if (point_equals(snake_position(player), apple.position)) {
 			apple_eaten++;		// Start animation
 		}
 
 		if (apple_eaten > 0) {
-			struct Body *body = player.head->next;		// Head shouldn't change
+			struct Node *node = list_get_node(player.body, 1);		// Head shouldn't change
+
 			bool is_body_eating;
-			while (body != NULL) {
+			while (node != NULL) {
+				struct Body *body = node->content;
 				is_body_eating = point_equals(body->position, apple.position);
 
 				if (!body->hidden) {
@@ -112,7 +115,7 @@ int main() {
 					}
 				}
 
-				body = body->next;
+				node = node->next;
 			}
 
 			// Add a new body part when it reached the tail
@@ -124,13 +127,13 @@ int main() {
 				apple_eaten--;
 
 				for (size_t i = 0; i < APPLE_VALUE; i++) {
-					body_tail_show(player.head, SNAKE_BODY);
+					snake_tail_show(&player, SNAKE_BODY);
 				}
 			}
 		}
 	}
 
-	snake_destroy(player);
+	snake_destroy(&player);
 	endwin();
 	exit_curses(0);
 }
