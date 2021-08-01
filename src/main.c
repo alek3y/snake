@@ -105,7 +105,11 @@ int main() {
 
 				// Add a new body part when the apple reaches the tail
 				} else if (player_node->next == NULL) {
-					snake_tail_show(&player, SNAKE_BODY);
+					Apple *apple = list_get(board.apples, apple_number);
+					for (size_t i = 0; i < apple->value; i++) {
+						snake_tail_show(&player, SNAKE_BODY);
+					}
+
 					free(list_remove(&board.apples, apple_number));
 
 				// Otherwise animate the body
