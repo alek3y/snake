@@ -9,17 +9,22 @@ long random_range(long min, long max) {
 	return random() % (max - min + 1) + min;
 }
 
-/* Board */
+/* Types */
+
+// Board
+
+typedef struct {
+	Point position;
+	char symbol;
+	int value;
+} Apple;
 
 typedef struct {
 	Point top_left, bottom_right;
+	List apples;
 } Board;
 
-Board board_new(Point, Point);
-Point board_random_position(Board);
-bool board_is_inside(Board, Point);
-
-/* Snake */
+// Snake
 
 struct Body {
 	Point position;
@@ -27,12 +32,26 @@ struct Body {
 	bool hidden;
 };
 
-struct Body *body_new(char, Point, bool);
-
 typedef struct {
 	List body;
 } Snake;
 
+/* Prototypes */
+
+// Board
+
+Apple *apple_new(char, int);
+Board board_new(Point, Point);
+Point board_random_position(Board);
+bool board_is_inside(Board, Point);
+size_t board_apple_find(Board, Point);
+bool board_is_apple(Board, Point);
+void board_apple_place(Board *, Apple *, Snake);
+void board_apples_draw(Board);
+
+// Snake
+
+struct Body *body_new(char, Point, bool);
 void snake_tail_show(Snake *, char);
 Snake snake_new(Point, char, char);
 Point snake_position(Snake);
@@ -43,20 +62,7 @@ void snake_destroy(Snake *);
 bool snake_is(Snake, Point);
 bool snake_is_dead(Snake);
 
-/* Apple */
-
-typedef struct {
-	Point position;
-	char symbol;
-	int value;
-} Apple;
-
-Apple apple_new(char, int);
-void apple_place(Apple *, Board, Snake);
-void apple_draw(Apple);
-
-/* Function definitions */
+/* Functions */
 
 #include "board.h"
 #include "snake.h"
-#include "apple.h"

@@ -32,15 +32,13 @@ int main() {
 	Snake player = snake_new(point_new(width/2, height/2), SNAKE_HEAD, SNAKE_BODY);
 	Point direction = point_new(-1, 0);
 
-	Apple apple = apple_new(APPLE, APPLE_VALUE);
-	apple_place(&apple, board, player);
-	size_t apple_eaten = 0;
+	board_apple_place(&board, apple_new(APPLE, APPLE_VALUE), player);
 
 	bool game_quit = false;
 	while (!game_quit) {
 		erase();
 		box(stdscr, 0, 0);
-		apple_draw(apple);
+		board_apples_draw(board);
 		snake_draw(player);
 		refresh();
 
@@ -91,45 +89,41 @@ int main() {
 
 		if (snake_is_dead(player)) {
 			break;
-		} else if (point_equals(snake_position(player), apple.position)) {
-			apple_eaten++;		// Start animation
 		}
 
-		if (apple_eaten > 0) {
-			struct Node *node = list_get_node(player.body, 1);		// Head shouldn't change
+		// Handle interaction with apples
+		struct Node *player_head = list_get_node(player.body, 0), *player_node = player_head;
+		while (player_node != NULL) {
+			struct Body *body = player_node->content;
 
-			bool is_body_eating;
-			while (node != NULL) {
-				struct Body *body = node->content;
-				is_body_eating = point_equals(body->position, apple.position);
+			size_t apple_number = board_apple_find(board, body->position);
+			if (apple_number != -1) {
 
-				if (!body->hidden) {
-					if (is_body_eating) {
-						body->symbol = SNAKE_BODY_EAT;
-					} else {
-						body->symbol = SNAKE_BODY;
-					}
-				}
+				// Add a new apple when the snake eats it
+				if (player_node == player_head) {
+					board_apple_place(&board, apple_new(APPLE, APPLE_VALUE), player);
 
-				node = node->next;
-			}
-
-			// Add a new body part when it reached the tail
-			if (is_body_eating) {
-
-				// TODO: Add apple to the snake as soon as it gets eaten on the head (and
-				// check if the animation works with multiple apples)
-				apple_place(&apple, board, player);
-				apple_eaten--;
-
-				for (size_t i = 0; i < APPLE_VALUE; i++) {
+				// Add a new body part when the apple reaches the tail
+				} else if (player_node->next == NULL) {
 					snake_tail_show(&player, SNAKE_BODY);
+					free(list_remove(&board.apples, apple_number));
+
+				// Otherwise animate the body
+				} else {
+					body->symbol = SNAKE_BODY_EAT;
+				}
+			} else {
+				if (player_node != player_head && !body->hidden) {
+					body->symbol = SNAKE_BODY;
 				}
 			}
+
+			player_node = player_node->next;
 		}
 	}
 
 	snake_destroy(&player);
+	board_destroy(&board);
 	endwin();
 	exit_curses(0);
 }
