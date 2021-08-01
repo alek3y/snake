@@ -1,12 +1,3 @@
-#include "point.h"
-#include "util.h"
-
-#pragma once
-
-typedef struct {
-	Point top_left, bottom_right;
-} Board;
-
 Board board_new(Point top_left, Point bottom_right) {
 	return (Board) {top_left, bottom_right};
 }

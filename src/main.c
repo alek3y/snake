@@ -3,11 +3,7 @@
 #include <time.h>
 #include <curses.h>
 #include <stdbool.h>
-#include "point.h"
-#include "list.h"
-#include "snake.h"
-#include "apple.h"
-#include "board.h"
+#include "game/game.h"
 
 #define SNAKE_HEAD '0'
 #define SNAKE_BODY 'o'

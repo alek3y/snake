@@ -1,16 +1,3 @@
-#include <stdlib.h>
-#include "point.h"
-#include "list.h"
-#include "board.h"
-
-#pragma once
-
-struct Body {
-	Point position;
-	char symbol;
-	bool hidden;
-};
-
 struct Body *body_new(char symbol, Point position, bool hidden) {
 	struct Body *body = calloc(1, sizeof(*body));
 	body->position = position;
@@ -18,10 +5,6 @@ struct Body *body_new(char symbol, Point position, bool hidden) {
 	body->hidden = hidden;
 	return body;
 }
-
-typedef struct {
-	List body;
-} Snake;
 
 void snake_tail_show(Snake *snake, char symbol) {
 	struct Body *last = list_get(snake->body, snake->body.size-1);

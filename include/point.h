@@ -1,5 +1,4 @@
 #include <stdbool.h>
-#include "util.h"
 
 #pragma once
 

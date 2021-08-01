@@ -1,15 +1,3 @@
-#include "point.h"
-#include "snake.h"
-#include "board.h"
-
-#pragma once
-
-typedef struct {
-	Point position;
-	char symbol;
-	int value;
-} Apple;
-
 Apple apple_new(char symbol, int value) {
 	return (Apple) {point_new(0, 0), symbol, value};
 }
