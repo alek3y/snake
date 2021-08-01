@@ -78,10 +78,6 @@ int main() {
 				}
 				break;
 
-			case 'p':
-				snake_tail_show(&player, SNAKE_BODY, point_new(0, 0));
-				break;
-
 			case 'q':
 				game_quit = true;
 				break;
