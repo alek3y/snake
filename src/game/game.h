@@ -52,7 +52,7 @@ void board_apples_draw(Board);
 // Snake
 
 struct Body *body_new(char, Point, bool);
-void snake_tail_show(Snake *, char);
+void snake_tail_show(Snake *, char, Point);
 Snake snake_new(Point, char, char);
 Point snake_position(Snake);
 void snake_move(Snake, Point);

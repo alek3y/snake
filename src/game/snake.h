@@ -1,22 +1,19 @@
 struct Body *body_new(char symbol, Point position, bool hidden) {
 	struct Body *body = calloc(1, sizeof(*body));
-	body->position = position;
-	body->symbol = symbol;
-	body->hidden = hidden;
+	*body = (struct Body) {position, symbol, hidden};
 	return body;
 }
 
-void snake_tail_show(Snake *snake, char symbol) {
+void snake_tail_show(Snake *snake, char symbol, Point position) {
 	struct Body *last = list_get(snake->body, snake->body.size-1);
-	last->symbol = symbol;
-	last->hidden = false;
+	*last = (struct Body) {position, symbol, false};
 	list_push(&snake->body, body_new(0, point_new(0, 0), true));		// Make new tail placeholder
 }
 
 Snake snake_new(Point position, char head_symbol, char body_symbol) {
 	Snake snake = {list_new()};
 	list_push(&snake.body, body_new(head_symbol, position, false));
-	snake_tail_show(&snake, head_symbol);
+	snake_tail_show(&snake, head_symbol, position);
 	return snake;
 }
 

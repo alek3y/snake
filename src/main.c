@@ -77,7 +77,7 @@ int main() {
 				break;
 
 			case 'p':
-				snake_tail_show(&player, SNAKE_BODY);
+				snake_tail_show(&player, SNAKE_BODY, point_new(0, 0));
 				break;
 
 			case 'q':
@@ -107,7 +107,7 @@ int main() {
 				} else if (player_node->next == NULL) {
 					Apple *apple = list_get(board.apples, apple_number);
 					for (size_t i = 0; i < apple->value; i++) {
-						snake_tail_show(&player, SNAKE_BODY);
+						snake_tail_show(&player, SNAKE_BODY, body->position);
 					}
 
 					free(list_remove(&board.apples, apple_number));
