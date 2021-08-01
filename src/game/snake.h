@@ -10,10 +10,10 @@ void snake_tail_show(Snake *snake, char symbol, Point position) {
 	list_push(&snake->body, body_new(0, point_new(0, 0), true));		// Make new tail placeholder
 }
 
-Snake snake_new(Point position, char head_symbol, char body_symbol) {
+Snake snake_new(Point position, char head) {
 	Snake snake = {list_new()};
-	list_push(&snake.body, body_new(head_symbol, position, false));
-	snake_tail_show(&snake, head_symbol, position);
+	list_push(&snake.body, body_new(head, position, false));
+	snake_tail_show(&snake, head, position);
 	return snake;
 }
 

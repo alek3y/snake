@@ -30,7 +30,7 @@ int main() {
 	Board board = board_new(point_new(1, 1), point_new(width-2, height-2));
 
 	Point center = point_new(width/2, height/2);
-	Snake player = snake_new(center, SNAKE_HEAD, SNAKE_BODY);
+	Snake player = snake_new(center, SNAKE_HEAD);
 	snake_tail_show(&player, SNAKE_BODY, point_new(center.x+1, center.y));
 	Point direction = point_new(-1, 0);
 
