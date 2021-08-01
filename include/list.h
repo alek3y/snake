@@ -45,21 +45,25 @@ void list_push(List *list, void *content) {
 	list->size++;
 }
 
-void *list_pop(List *list) {
-	struct Node *last;
-	if (list->size == 1) {
-		last = list->head;
-		list->head = NULL;
+void *list_remove(List *list, size_t index) {
+	struct Node *node;
+	if (index == 0) {
+		node = list->head;
+		list->head = node->next;
 	} else {
-		struct Node *previous = list_get_node(*list, list->size-2);
-		last = previous->next;
-		previous->next = NULL;
+		struct Node *previous = list_get_node(*list, index-1);
+		node = previous->next;
+		previous->next = node->next;
 	}
-	void *content = last->content;
-	free(last);
+	void *content = node->content;
+	free(node);
 
 	list->size--;
 	return content;
+}
+
+void *list_pop(List *list) {
+	return list_remove(list, list->size-1);
 }
 
 void list_free_contents(List list) {
