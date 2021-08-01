@@ -1,5 +1,5 @@
 CC := gcc
-OUTDIR := target
+OUTDIR := build
 
 all:
 	mkdir -p $(OUTDIR)
