@@ -13,6 +13,8 @@
 
 #define MOVEMENT_SLEEP 160
 
+#define DEATH_SCREEN_SIZE point_new(20, 5)
+
 int main() {
 	srand(time(NULL));
 
@@ -123,6 +125,29 @@ int main() {
 			player_node = player_node->next;
 		}
 	}
+
+	WINDOW *death_screen = subwin(
+		stdscr,
+		DEATH_SCREEN_SIZE.y, DEATH_SCREEN_SIZE.x,
+		center.y - DEATH_SCREEN_SIZE.y/2,
+		center.x - DEATH_SCREEN_SIZE.x/2
+	);
+	notimeout(death_screen, true);
+
+	int input;
+	do {
+		erase();
+		box(stdscr, 0, 0);
+		box(death_screen, 0, 0);
+
+		wmove(death_screen, 1, 2);
+		wprintw(death_screen, "Game over!");
+		wmove(death_screen, 3, 2);
+		wprintw(death_screen, "Score: %d", player.body.size);
+		refresh();
+
+		input = wgetch(death_screen);
+	} while(input != 'q' && input != '\n');		// Wait for user input to quit
 
 	snake_destroy(&player);
 	board_destroy(&board);
