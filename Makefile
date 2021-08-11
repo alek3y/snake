@@ -1,5 +1,6 @@
 CC := gcc
 OUTDIR := build
+INSTALLDIR := /usr/local/bin
 
 all:
 	mkdir -p $(OUTDIR)
@@ -7,6 +8,12 @@ all:
 
 run: all
 	./$(OUTDIR)/main
+
+install: all
+	cp $(OUTDIR)/main $(INSTALLDIR)/snake
+
+uninstall:
+	rm $(INSTALLDIR)/snake
 
 clean:
 	rm -r $(OUTDIR)
